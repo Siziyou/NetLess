@@ -23,9 +23,11 @@ class Predictor():
         self.flatten = False
         self.constr_info = {}
         self.layer_container = []
+        self.input=[]
+        self.output=[]
         with open(INDEX_DIR+'imagenet_class_index.json') as labels_file:
             self.labels = json.load(labels_file)
-
+        self.disassemble_mode=True
     def __str__(self) -> str:
         print("Printing model config:")
         print(self.constr_info)
@@ -61,7 +63,9 @@ class Predictor():
             self.layer_container.append(copy.deepcopy(temp_point))
         self.layer_container = self.layer_container
         self.constr_info['lenth'] = len(self.layer_container)
-
+    def pre_process(self):
+        #process data here
+        pass
     def launch_countainer(self):
         x = self.testpng
         self.r18.eval()
@@ -76,21 +80,32 @@ class Predictor():
         print(f"Prediction for Dog {1}: {self.labels[str(x.item())]}")
 
     def dump_disassembled_file(self):
-        counter = 1
+        counter = 0
         for model in self.layer_container:
             torch.save(model, MODEL_SAVE_DIR+"testmodel_"+str(counter)+".pth")
             counter += 1
-        json.dump()
+        with open(CONFIG_DIR + "configure.json",'w') as f:
+            json.dump(self.constr_info,f)
         pass
-
-    def launch_disassembled_file(self, config):
-        # for i in range()
+    def launch_disassembled_file(self,config_dir,model_dir):
+        with open (config_dir+"configure.json") as f_1:
+            self.constr_info=json.load(f_1)
+        for i in range(self.constr_info['lenth']):
+            self.layer_container.append(torch.load(model_dir+"testmodel_"+str(i)+".pth"))
         # tmodel = torch.load("resnet18.pth")
         pass
-
-
-new_instance = Predictor()
-new_instance.test_launch(PICTURE_DIR + "111.jpg")
-new_instance.disassemble(flatten=True)
-new_instance.deploy_file()
-new_instance.launch_countainer()
+    def predict(self):
+        x = self.testpng
+        for model in self.layer_container:
+            # print(model) #output model
+            model.eval()
+            x = model(x)
+        x = x.argmax(dim=1)
+        return (f"Prediction: {self.labels[str(x.item())]}")
+if __name__ == "__main__":
+    new_instance = Predictor()
+    new_instance.test_launch(PICTURE_DIR + "111.jpg")
+    #new_instance.disassemble(flatten=True)
+    #new_instance.dump_disassembled_file()
+    new_instance.launch_disassembled_file(CONFIG_DIR,MODEL_SAVE_DIR)
+    new_instance.launch_countainer()
