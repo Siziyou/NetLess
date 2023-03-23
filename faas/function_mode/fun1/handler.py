@@ -3,5 +3,4 @@ def handle(req):
     Args:
         req (str): request body
     """
-
     return req

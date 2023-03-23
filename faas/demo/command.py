@@ -1,21 +1,21 @@
-import json
-from torchvision.io import read_image
-import torch
-import copy
-import torch.nn as nn
-from torchvision.models import resnet18, ResNet18_Weights
-import torchvision.models as model
+import command
 import os
 os.chdir(os.path.dirname(__file__))
+
 PICTURE_DIR = "./src/pictures/"
 INDEX_DIR = "./src/"
 MODEL_SAVE_DIR = "./src/models/"
 CONFIG_DIR = "./src/"
 
+import json
+from torchvision.io import read_image
+import torch
+import copy
+import torch.nn as nn
+from torchvision.models import ResNet18_Weights
 
 class Predictor():
     def __init__(self) -> None:
-        self.resnet34 = model.resnet34(pretrained=True)
         self.weights = ResNet18_Weights.DEFAULT
         self.flatten = False
         self.constr_info = {}
@@ -37,9 +37,7 @@ class Predictor():
         testpng = preprocess(testpng)
         testpng = testpng.unsqueeze(0)
         self.testpng = testpng
-        print(testpng)
-    def img2tensor_save(self):
-        pass
+
     def disassemble(self, flatten):
         self.flatten = flatten
         child = list(self.src_model.children())
