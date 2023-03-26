@@ -4,7 +4,7 @@ provider:
   gateway: http://127.0.0.1:31112
 functions:
   func3:
-    lang: python3-debian
+    lang: python3-onnx
     handler: ./func3
-    image: boilfish/func3:1.0.2
+    image: boilfish/func3:1.1.5
 

@@ -1,3 +1,2 @@
 requests
-torch-cpu
-torchvision-cpu
+onnxruntime

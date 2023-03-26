@@ -1,5 +1,5 @@
 import requests
-import torch
+import onnxruntime
 def handle(req):
     """handle a request to the function
     Args:
