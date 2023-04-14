@@ -25,6 +25,7 @@ USER app
 ENV PATH=$PATH:/home/app/.local/bin:/home/app/python/bin/
 ENV PYTHONPATH=$PYTHONPATH:/home/app/python
 
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install -r requirements.txt --target=/home/app/python
 
 RUN mkdir -p function
