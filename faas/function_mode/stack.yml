@@ -7,7 +7,3 @@ functions:
     lang: python3
     handler: ./fun1
     image: boilfish/func1:1.0.0
-  func3:
-    lang: python3-onnx
-    handler: ./func3
-    image: boilfish/func3:1.1.5

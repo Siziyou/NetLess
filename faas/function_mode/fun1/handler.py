@@ -1,6 +1,4 @@
+import json
 def handle(req):
-    """handle a request to the function
-    Args:
-        req (str): request body
-    """
-    return req
+    data={"1":1,"req":json.loads(req)["data"]}
+    return json.dumps(data)
