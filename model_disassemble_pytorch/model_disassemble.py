@@ -120,14 +120,17 @@ class Predictor():
             x = self.PrimaryData
             x3 = copy.deepcopy(self.PrimaryData)
             counter = 0
-            for i in range(self.constr_info['lenth']):
+            for j in range(self.constr_info['lenth']):
                 resnet_session = rt.InferenceSession(
-                    model_dir+"testmodel_"+str(i)+".onnx")
+                    model_dir+"testmodel_"+str(j)+".onnx")
+ 
                 input_name = resnet_session.get_inputs()[0].name
                 x2 = resnet_session.run([], {input_name: x2})[0]
+                # if(i==5 and j==0):
+                #     print(x2)
                 counter += 1
-                self.layer_container[i].eval()
-                x = self.layer_container[i](x)
+                self.layer_container[j].eval()
+                x = self.layer_container[j](x)
             x = x.argmax(dim=1)
             x2 = np.argmax(x2)
             x3 = self.src_model(x3)
