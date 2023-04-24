@@ -6,5 +6,5 @@ functions:
   controller:
     lang: python3-controller
     handler: ./controller
-    image: boilfish/controller:latest
+    image: boilfish/controller:1.0.1
 

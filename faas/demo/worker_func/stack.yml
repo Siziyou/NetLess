@@ -4,32 +4,32 @@ provider:
   gateway: http://127.0.0.1:31112
 functions:
   func0:
-    lang: python3-onnx
+    lang: python3-worker
     handler: ./func0
-    image: boilfish/func0:1.0.0
+    image: boilfish/func0:1.0.1
 
   func1:
-    lang: python3-onnx
+    lang: python3-worker
     handler: ./func1
-    image: boilfish/func1:1.0.0
+    image: boilfish/func1:1.0.1
 
   func2:
-    lang: python3-onnx
+    lang: python3-worker
     handler: ./func2
-    image: boilfish/func2:1.0.0
+    image: boilfish/func2:1.0.1
 
   func3:
-    lang: python3-onnx
+    lang: python3-worker
     handler: ./func3
-    image: boilfish/func3:1.0.0
+    image: boilfish/func3:1.0.1
 
   func4:
-    lang: python3-onnx
+    lang: python3-worker
     handler: ./func4
-    image: boilfish/func4:1.0.0
+    image: boilfish/func4:1.0.1
 
   func5:
-    lang: python3-onnx
+    lang: python3-worker
     handler: ./func5
-    image: boilfish/func5:1.0.0
+    image: boilfish/func5:1.0.1
 

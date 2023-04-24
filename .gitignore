@@ -1,3 +1,5 @@
 /model_disassemble_pytorch/src/src_models
 /model_disassemble_pytorch/src/models
 /faas/function_mode/build
+/faas/conmunacate_TEST/template
+/faas/conmunacate_TEST/build
