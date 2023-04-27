@@ -7,8 +7,8 @@ def handle(req):
     body = orjson.loads(req)
     if(body['s']==0):
         return req
-    with open('imagenet_class_index.json') as labels_file:
-        labels = orjson.loads(labels_file)
+    with open('imagenet_class_index.json', "rb") as labels_file:
+        labels = orjson.loads(labels_file.read())
     resnet_session = rt.InferenceSession("testmodel_"+str(5)+".onnx")
     input_name = resnet_session.get_inputs()[0].name
     x = np.array(body['d'],dtype=np.float32)

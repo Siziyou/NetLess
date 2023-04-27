@@ -12,19 +12,18 @@ def warmup():
 
 
 def handle(req):
-    body=orjson.loads(req)
-    if(body['s']==0):
-        if(body['d'] != "warm"):
+    input=orjson.loads(req)
+    if(input['s']==0):
+        if(input['d'] != "warm"):
             return debug(req)
         else:
             return warmup()
-    
-    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func0',data=req).text
-    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func1',data=x).text
-    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func2',data=x).text
-    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func3',data=x).text
-    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func4',data=x).text
-    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func5',data=x).text
+    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func0',data=req).text[2:-2]
+    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func1',data=x).text[2:-2]
+    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func2',data=x).text[2:-2]
+    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func3',data=x).text[2:-2]
+    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func4',data=x).text[2:-2]
+    x = requests.post('http://gateway.openfaas.svc.cluster.local:8080/function/func5',data=x).text[2:-2]
     return x
 
 def debug(req):
