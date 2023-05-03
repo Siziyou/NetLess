@@ -44,5 +44,5 @@ if __name__ == "__main__":
     weights = ResNet18_Weights.DEFAULT.transforms()
     src_model = model.resnet18(pretrained=True)
     new_instance = Requster(transformer=weights)
-    res=(new_instance.request_jpg(pic_dir="./src/pictures/8.jpg"))
-    # print(res)
+    res=(new_instance.request_jpg(pic_dir="./src/pictures/7.jpg"))
+    print(res[2:-2])

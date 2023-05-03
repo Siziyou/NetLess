@@ -4,7 +4,7 @@ provider:
   gateway: http://127.0.0.1:31112
 functions:
   controller:
-    lang: python3-controller
+    lang: controller
     handler: ./controller
-    image: boilfish/controller:1.0.1
+    image: boilfish/controller:1.0.2
 
