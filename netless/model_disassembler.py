@@ -3,7 +3,7 @@ from torchvision.io import read_image
 import torch
 import copy
 import torch.nn as nn
-from torchvision.models import resnet18, ResNet18_Weights
+from torchvision.models import resnet18, resnet34, resnet50, resnet101, resnet152, ResNet18_Weights, ResNet34_Weights, ResNet50_Weights, ResNet101_Weights, ResNet152_Weights
 import torchvision.models as model
 import os
 import onnxruntime as rt
@@ -44,7 +44,6 @@ class Predictor():
         pridata = pridata.unsqueeze(0)
         return pridata
 
-
     def disassemble(self, flatten):
         self.flatten = flatten
         child = list(self.src_model.children())
@@ -67,9 +66,14 @@ class Predictor():
             self.layer_container.append(copy.deepcopy(temp_point))
         self.layer_container = self.layer_container
         self.constr_info['l'] = len(self.layer_container)
-
+        self.constr_info['f'] = {}
+        for i in range(self.constr_info['l']-1):
+            self.constr_info['f']['func'+str(i)]=1
+        self.constr_info['f']['func'+str(self.constr_info['l']-1)]=2
     def dump_disassembled_file(self):
         counter = 0
+        if(not os.path.isdir(MODEL_SAVE_DIR)):
+            os.mkdir(MODEL_SAVE_DIR)
         x = copy.deepcopy(self.PrimaryData)
         for model in self.layer_container:
             model.eval()
@@ -153,8 +157,8 @@ if __name__ == "__main__":
                              Primary_Data_DIR=PICTURE_DIR+str(1)+".jpg")
     new_instance.disassemble(flatten=True)
     new_instance.dump_disassembled_file()
-    res = new_instance.predict()
-    print(res)
-    new_instance.src_model.eval()
-    new_instance.testonnx_func(CONFIG_DIR, MODEL_SAVE_DIR, PICTURE_DIR)
+    # res = new_instance.predict()
+    # print(res)
+    # new_instance.src_model.eval()
+    # new_instance.testonnx_func(CONFIG_DIR, MODEL_SAVE_DIR, PICTURE_DIR)
     # new_instance.load_disassembled_file(CONFIG_DIR,MODEL_SAVE_DIR)

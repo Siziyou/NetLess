@@ -1,1 +1,1 @@
-{'s': 1, 'd': ['n02123045', 'tabby']}
+{'s': 1, 'd': ['n02093428', 'American_Staffordshire_terrier']}

@@ -1,5 +1,5 @@
 from torchvision.io import read_image
-from torchvision.models import resnet18, ResNet18_Weights
+from torchvision.models import ResNet18_Weights,ResNet34_Weights,ResNet50_Weights,ResNet101_Weights,ResNet152_Weights
 import torchvision.models as model
 import os
 import numpy as np
@@ -42,7 +42,6 @@ if __name__ == "__main__":
     #     labels = orjson.loads(labels_file.read())
     # print(type(labels))
     weights = ResNet18_Weights.DEFAULT.transforms()
-    src_model = model.resnet18(pretrained=True)
     new_instance = Requster(transformer=weights)
-    res=(new_instance.request_jpg(pic_dir="./src/pictures/7.jpg"))
+    res=(new_instance.request_jpg(pic_dir="./src/pictures/2.jpg"))
     print(res[2:-2])
