@@ -1,9 +1,0 @@
-functions:
-  controller:
-    handler: ./controller
-    image: boilfish/controller:1.0.4
-    lang: controller
-provider:
-  gateway: 127.0.0.1:31112
-  name: openfaas
-version: '1.0'
