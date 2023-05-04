@@ -31,7 +31,7 @@ def handle(req):
         if(funcdict[key] == 1):
             data = requests.post(sync_addr+key, data=data).text[2:-2]
         elif(funcdict[key] == 2):
-            with open('labels.json', "rb") as labels_file:
+            with open('./classify_src/labels.json', "rb") as labels_file:
                 labels = orjson.loads(labels_file.read())
             data = requests.post(sync_addr+key, data=data).text[2:-2]
             data=orjson.loads(data)
