@@ -18,7 +18,7 @@ input_shape = (3, 224, 224)  # 输入数据,改成自己的输入shape
 input = torch.randn(batch_size, *input_shape)   # 生成张量
 
 
-class Predictor():
+class disassembler():
     def __init__(self, src_model, transformer, Primary_Data_DIR) -> None:
         self.flatten = False
         self.constr_info = {}
@@ -27,8 +27,6 @@ class Predictor():
         self.output = []
         self.src_model = src_model
         self.transformer = transformer
-        with open(INDEX_DIR+'imagenet_class_index.json') as labels_file:
-            self.labels = json.load(labels_file)
         self.disassemble_mode = True
         self.PrimaryData = self.load_pic(Primary_Data_DIR)
 
@@ -68,8 +66,9 @@ class Predictor():
         self.constr_info['l'] = len(self.layer_container)
         self.constr_info['f'] = {}
         for i in range(self.constr_info['l']-1):
-            self.constr_info['f']['func'+str(i)]=1
-        self.constr_info['f']['func'+str(self.constr_info['l']-1)]=2
+            self.constr_info['f']['func'+str(i)] = 1
+        self.constr_info['f']['func'+str(self.constr_info['l']-1)] = 2
+
     def dump_disassembled_file(self):
         counter = 0
         if(not os.path.isdir(MODEL_SAVE_DIR)):
@@ -105,7 +104,10 @@ class Predictor():
         pass
 
     def testonnx_func(self, config_dir, model_dir, data_dir):
+        with open(INDEX_DIR+'lables.json') as labels_file:
+            self.labels = json.load(labels_file)
         # Loading Configuration
+        self.src_model.eval()
         with open(config_dir+"configure.json") as f_1:
             self.constr_info = json.load(f_1)
         for i in range(self.constr_info['lenth']):
@@ -124,8 +126,6 @@ class Predictor():
 
                 input_name = resnet_session.get_inputs()[0].name
                 x2 = resnet_session.run([], {input_name: x2})[0]
-                # if(i==5 and j==0):
-                #     print(x2)
                 counter += 1
                 self.layer_container[j].eval()
                 x = self.layer_container[j](x)
@@ -139,6 +139,8 @@ class Predictor():
         pass
 
     def predict(self):
+        with open(INDEX_DIR+'lables.json') as labels_file:
+            self.labels = json.load(labels_file)
         x = self.PrimaryData
         for model in self.layer_container:
             # print(model) #output model
@@ -149,12 +151,10 @@ class Predictor():
 
 
 if __name__ == "__main__":
-    # resnet34 = model.resnet34(pretrained=True)
     weights = ResNet18_Weights.DEFAULT.transforms()
     src_model = model.resnet18(pretrained=True)
-    # src_model = torch.load("./src/src_models/resnet18-5c106cde.pth")
-    new_instance = Predictor(src_model=src_model, transformer=weights,
-                             Primary_Data_DIR=PICTURE_DIR+str(1)+".jpg")
+    new_instance = disassembler(src_model=src_model, transformer=weights,
+                             Primary_Data_DIR="./pictures/"+str(1)+".jpg")
     new_instance.disassemble(flatten=True)
     new_instance.dump_disassembled_file()
     # res = new_instance.predict()

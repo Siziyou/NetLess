@@ -1,3 +1,2 @@
-build
-.secrets
-template
+worker_func
+src
