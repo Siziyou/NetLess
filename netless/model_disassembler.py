@@ -151,8 +151,8 @@ class disassembler():
 
 
 if __name__ == "__main__":
-    weights = ResNet18_Weights.DEFAULT.transforms()
-    src_model = model.resnet18(pretrained=True)
+    weights = ResNet34_Weights.DEFAULT.transforms()
+    src_model = resnet152(pretrained=True)
     new_instance = disassembler(src_model=src_model, transformer=weights,
                              Primary_Data_DIR="./pictures/"+str(1)+".jpg")
     new_instance.disassemble(flatten=True)
