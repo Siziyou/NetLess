@@ -176,8 +176,6 @@ class auto_worker():
             shutil.copytree(self.CONFIG_DIR+"classify_src",
                             self.WORKER_DIR+"controller/classify_src")
         pass
-
-
 if __name__ == "__main__":
     version = "1.0.4"
     MEMORY_LIMIT = 128*1024*1024
