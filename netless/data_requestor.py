@@ -25,7 +25,7 @@ class Requster():
     def request_jpg(self,pic_dir):
         data= np.array(self.test_load(pic_dir))
         T1 = time.time()
-        x = requests.post('http://127.0.0.1:31112/function/controller',data=orjson.dumps({"s":1,'d':0},option=orjson.OPT_SERIALIZE_NUMPY))
+        x = requests.post('http://127.0.0.1:31112/function/controller',data=orjson.dumps({"s":1,'d':data},option=orjson.OPT_SERIALIZE_NUMPY))
         T2 = time.time()
         print('程序运行时间:%s毫秒' % ((T2 - T1)*1000))
         return x.text

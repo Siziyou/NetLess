@@ -6,8 +6,8 @@ os.chdir(os.path.dirname(__file__))
 
 
 with open('configure.json', "rb") as profile:
-    profile = orjson.loads(profile.read())
-funcdict = profile['f']
+    funcdict = orjson.loads(profile.read())
+
 async_addr = "http://gateway.openfaas.svc.cluster.local:8080/async-function/"
 sync_addr = "http://gateway.openfaas.svc.cluster.local:8080/function/"
 

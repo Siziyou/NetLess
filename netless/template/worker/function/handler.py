@@ -7,12 +7,17 @@ os.chdir(os.path.dirname(__file__))
 
 def handle(req):
     input = orjson.loads(req)
-    signal = input['s']
-    if signal == 1:
-        session = rt.InferenceSession("model.onnx")
-        input_name = session.get_inputs()[0].name
+    if input['s'] == 1:
+        counter=0
+        filelist=os.listdir("./")
+        for name in filelist:
+            if("onnx" in name):
+                counter+=1
         x = np.array(input['d'], dtype=np.float32)
-        x = session.run([], {input_name: x})[0]
+        for i in range(counter):
+            resnet_session = rt.InferenceSession(str(i)+".onnx")
+            input_name = resnet_session.get_inputs()[0].name
+            x = resnet_session.run([], {input_name: x})[0]
         return orjson.dumps({"s": 1, "d": x}, option=orjson.OPT_SERIALIZE_NUMPY)
-    elif signal == 0:
+    elif input['s'] == 0:
         return req
