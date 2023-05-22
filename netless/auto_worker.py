@@ -177,7 +177,7 @@ class auto_worker():
                             self.WORKER_DIR+"controller/classify_src")
         pass
 if __name__ == "__main__":
-    version = "1.0.4"
+    version = "1.0.6"
     MEMORY_LIMIT = 128*1024*1024
     new_instance = auto_worker(VERSION=version, MEMORY_LIMIT=MEMORY_LIMIT)
     new_instance.assemble()

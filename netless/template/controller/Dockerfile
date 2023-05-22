@@ -22,7 +22,7 @@ RUN mkdir -p function
 RUN touch ./function/__init__.py
 WORKDIR /home/app/function/
 COPY function/requirements.txt	.
-RUN pip --no-cache-dir install numpy orjson requests --target=/home/app/python 
+RUN pip --no-cache-dir install numpy orjson requests aiohttp --target=/home/app/python 
 RUN pip --no-cache-dir install -r requirements.txt --target=/home/app/python 
 RUN find /home/app/ -name '*.pyc' -delete
 

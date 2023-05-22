@@ -1,6 +1,3 @@
 worker_func
 src/models
 src/configure.json
-template
-build
-.secrets

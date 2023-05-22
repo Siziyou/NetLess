@@ -9,7 +9,7 @@ import os
 import onnxruntime as rt
 import numpy as np
 os.chdir(os.path.dirname(__file__))
-PICTURE_DIR = "./src/pictures/"
+PICTURE_DIR = "./pictures/"
 INDEX_DIR = "./src/"
 MODEL_SAVE_DIR = "./src/models/"
 CONFIG_DIR = "./src/"
@@ -48,6 +48,7 @@ class disassembler():
         temp_point = nn.Sequential()
         for i in range(0, len(child)):
             item = child[i]
+            print(i,item)
             if (isinstance(item, nn.Sequential)):
                 if (temp_point is not None):
                     self.layer_container.append(copy.deepcopy(temp_point))
@@ -74,6 +75,19 @@ class disassembler():
         if(not os.path.isdir(MODEL_SAVE_DIR)):
             os.mkdir(MODEL_SAVE_DIR)
         x = copy.deepcopy(self.PrimaryData)
+        self.src_model.eval()
+        shape = list(x.shape)
+        input = torch.randn(1, shape[1], shape[2], shape[3])
+        torch.onnx.export(self.src_model, input, MODEL_SAVE_DIR +
+                              "testmodel_total.onnx", export_params=True,
+                              opset_version=10,    # the ONNX version to export the model to
+                              do_constant_folding=True,  # whether to execute constant folding for optimization
+                              # the model's input names
+                              input_names=['modelInput'],
+                              # the model's output names
+                              output_names=['modelOutput'],
+                              dynamic_axes={'modelInput': {0: 'batch_size'},    # variable length axes
+                                            'modelOutput': {0: 'batch_size'}})
         for model in self.layer_container:
             model.eval()
             shape = list(x.shape)
@@ -98,35 +112,35 @@ class disassembler():
     def load_disassembled_file(self, config_dir, model_dir):
         with open(config_dir+"configure.json") as f_1:
             self.constr_info = json.load(f_1)
-        for i in range(self.constr_info['lenth']):
+        for i in range(self.constr_info['l']):
             self.layer_container.append(torch.load(
                 model_dir+"testmodel_"+str(i)+".pth"))
         pass
 
     def testonnx_func(self, config_dir, model_dir, data_dir):
-        with open(INDEX_DIR+'lables.json') as labels_file:
+        with open(INDEX_DIR+'classify_src/labels.json') as labels_file:
             self.labels = json.load(labels_file)
         # Loading Configuration
         self.src_model.eval()
         with open(config_dir+"configure.json") as f_1:
             self.constr_info = json.load(f_1)
-        for i in range(self.constr_info['lenth']):
+        for i in range(self.constr_info['l']):
             self.layer_container.append(torch.load(
                 model_dir+"testmodel_"+str(i)+".pth"))
         for i in range(1, 100):
             # Input
-            self.PrimaryData = self.load_pic(data_dir+str(i)+".jpg")
+            self.PrimaryData = self.load_pic(data_dir+str(i+1)+".jpg")
             x2 = np.array(self.PrimaryData)
             x = self.PrimaryData
             x3 = copy.deepcopy(self.PrimaryData)
             counter = 0
-            for j in range(self.constr_info['lenth']):
+            for j in range(self.constr_info['l']):
                 resnet_session = rt.InferenceSession(
                     model_dir+"testmodel_"+str(j)+".onnx")
-
                 input_name = resnet_session.get_inputs()[0].name
                 x2 = resnet_session.run([], {input_name: x2})[0]
                 counter += 1
+                del resnet_session
                 self.layer_container[j].eval()
                 x = self.layer_container[j](x)
             x = x.argmax(dim=1)
@@ -152,7 +166,7 @@ class disassembler():
 
 if __name__ == "__main__":
     weights = ResNet34_Weights.DEFAULT.transforms()
-    src_model = resnet18(pretrained=True)
+    src_model = resnet152(pretrained=True)
     new_instance = disassembler(src_model=src_model, transformer=weights,
                              Primary_Data_DIR="./pictures/"+str(1)+".jpg")
     new_instance.disassemble(flatten=True)

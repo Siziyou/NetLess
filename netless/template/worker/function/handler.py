@@ -18,6 +18,7 @@ def handle(req):
             resnet_session = rt.InferenceSession(str(i)+".onnx")
             input_name = resnet_session.get_inputs()[0].name
             x = resnet_session.run([], {input_name: x})[0]
+            del resnet_session
         return orjson.dumps({"s": 1, "d": x}, option=orjson.OPT_SERIALIZE_NUMPY)
     elif input['s'] == 0:
         return req
