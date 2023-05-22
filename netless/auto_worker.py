@@ -161,6 +161,7 @@ class auto_worker():
                     config_dict[name]=2
                 else:
                     config_dict[name]=1
+            config_dict['a']=self.configure['a']
             with open('./controller/configure.json', 'w') as f:
                 json.dump(config_dict, f)
             controller_dict=create_func_dict(

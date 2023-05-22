@@ -8,6 +8,17 @@ import torchvision.models as model
 import os
 import onnxruntime as rt
 import numpy as np
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.m1=nn.Sequential(resnet101(pretrained=True))
+        self.m2=nn.Sequential(resnet152(pretrained=True))
+    def forward(self,input):
+        a=self.m1(input)
+        b=self.m2(input)
+        return (a==b)
+        
 os.chdir(os.path.dirname(__file__))
 PICTURE_DIR = "./pictures/"
 INDEX_DIR = "./src/"
@@ -19,7 +30,7 @@ input = torch.randn(batch_size, *input_shape)   # 生成张量
 
 
 class disassembler():
-    def __init__(self, src_model, transformer, Primary_Data_DIR) -> None:
+    def __init__(self, src_model, transformer, Primary_Data_DIR,flatten=False,async_flag=[]) -> None:
         self.flatten = False
         self.constr_info = {}
         self.layer_container = []
@@ -29,7 +40,8 @@ class disassembler():
         self.transformer = transformer
         self.disassemble_mode = True
         self.PrimaryData = self.load_pic(Primary_Data_DIR)
-
+        self.flatten=flatten
+        self.async_flag=async_flag
     def __str__(self) -> str:
         print("Printing model config:")
         print(self.constr_info)
@@ -42,13 +54,11 @@ class disassembler():
         pridata = pridata.unsqueeze(0)
         return pridata
 
-    def disassemble(self, flatten):
-        self.flatten = flatten
+    def disassemble(self):
         child = list(self.src_model.children())
-        temp_point = nn.Sequential()
+        temp_point = None
         for i in range(0, len(child)):
             item = child[i]
-            print(i,item)
             if (isinstance(item, nn.Sequential)):
                 if (temp_point is not None):
                     self.layer_container.append(copy.deepcopy(temp_point))
@@ -69,7 +79,8 @@ class disassembler():
         for i in range(self.constr_info['l']-1):
             self.constr_info['f']['func'+str(i)] = 1
         self.constr_info['f']['func'+str(self.constr_info['l']-1)] = 2
-
+        self.constr_info['a'] = self.async_flag
+        print(self.layer_container)
     def dump_disassembled_file(self):
         counter = 0
         if(not os.path.isdir(MODEL_SAVE_DIR)):
@@ -88,8 +99,12 @@ class disassembler():
                               output_names=['modelOutput'],
                               dynamic_axes={'modelInput': {0: 'batch_size'},    # variable length axes
                                             'modelOutput': {0: 'batch_size'}})
+        counter=0
         for model in self.layer_container:
             model.eval()
+            print(counter)
+            if(self.async_flag==[0,1]):
+                x=copy.deepcopy(self.PrimaryData)
             shape = list(x.shape)
             input = torch.randn(1, shape[1], shape[2], shape[3])
             x = model(x)
@@ -166,11 +181,16 @@ class disassembler():
 
 if __name__ == "__main__":
     weights = ResNet34_Weights.DEFAULT.transforms()
-    src_model = resnet152(pretrained=True)
-    new_instance = disassembler(src_model=src_model, transformer=weights,
-                             Primary_Data_DIR="./pictures/"+str(1)+".jpg")
-    new_instance.disassemble(flatten=True)
+    src_model = resnet101(pretrained=True)
+    async_flag=[0,1]
+    testmodel=Model()
+    print(testmodel)
+    new_instance = disassembler(src_model=testmodel, transformer=weights,
+                             Primary_Data_DIR="./pictures/"+str(1)+".jpg",flatten=False,async_flag=async_flag)
+    new_instance.disassemble()
     new_instance.dump_disassembled_file()
+    
+
     # res = new_instance.predict()
     # print(res)
     # new_instance.src_model.eval()
