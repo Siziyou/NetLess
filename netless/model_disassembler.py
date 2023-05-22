@@ -17,7 +17,7 @@ class Model(nn.Module):
     def forward(self,input):
         a=self.m1(input)
         b=self.m2(input)
-        return (a==b)
+        return a
         
 os.chdir(os.path.dirname(__file__))
 PICTURE_DIR = "./pictures/"
